@@ -1,0 +1,12 @@
+# data/meta/finality_assumptions.yaml
+
+challenge_window:
+  base: "≈ 7 days"
+  optimism: "≈ 7 days"
+  arbitrum: "≈ 7 days"
+
+notes:
+  - "B = L2 inter-block median (p50) from data/clean/latency_summary.csv."
+  - "C = L2→L1 posting delay median (p50) from data/clean/latency_summary.csv."
+  - "Numbers reflect your collection window (see §6.1)."
+  - "Challenge-window text is descriptive; cite official sources."
