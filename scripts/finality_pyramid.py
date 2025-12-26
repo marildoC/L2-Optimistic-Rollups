@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# scripts/finality_pyramid.py
-# Build a clean Finality Pyramid from latency_summary.csv (+ optional YAML assumptions).
-# Outputs: figures/finality_pyramid.png and .svg
+
 
 import sys, math
 from pathlib import Path
@@ -12,7 +9,7 @@ from matplotlib.patches import Polygon
 try:
     import yaml
 except Exception:
-    yaml = None  # graceful fallback
+    yaml = None  
 
 ROOT = Path(__file__).resolve().parents[1]
 CLEAN = ROOT / "data" / "clean"
@@ -25,7 +22,6 @@ ASSUME_YAML = META  / "finality_assumptions.yaml"
 
 CHAIN_ORDER = ["base", "optimism", "arbitrum"]
 
-# ---------- helpers ----------
 def _fmt(x: float) -> str:
     if x is None:
         return "TBD"
@@ -73,7 +69,6 @@ def _trap(ax, xc, yb, w_bot, w_top, h, face="#3b82f6", edge="#1f2937", alpha=0.1
     ax.add_patch(poly)
     return (xc, (y0+y1)/2.0)
 
-# ---------- drawing ----------
 def build_pyramid(df: pd.DataFrame, assumptions: dict):
     b = dict(zip(df["chain"], df["LatencyB_p50"]))
     c = dict(zip(df["chain"], df["LatencyC_p50"]))
@@ -87,10 +82,9 @@ def build_pyramid(df: pd.DataFrame, assumptions: dict):
     fig, ax = plt.subplots(figsize=(12.0, 8.0))
     ax.set_xlim(0,1); ax.set_ylim(0,1); ax.set_axis_off()
 
-    # geometry (extra spacing to avoid any overlap)
     x = 0.5
-    H   = 0.18      # was 0.17
-    GAP = 0.055     # was 0.04
+    H   = 0.18      
+    GAP = 0.055     
     w_bot = [0.90, 0.78, 0.64, 0.50]
     w_top = [0.82, 0.70, 0.56, 0.44]
     y0s = [0.78, 0.78-(H+GAP), 0.78-2*(H+GAP), 0.78-3*(H+GAP)]
@@ -116,14 +110,12 @@ def build_pyramid(df: pd.DataFrame, assumptions: dict):
         final_txt,
     ]
 
-    # place text (bigger vertical offsets to prevent collisions)
     for (cx, cy), ttl, sub in zip(centers, titles, subs):
         ax.text(cx, cy + 0.042, ttl, ha="center", va="center",
                fontsize=14, fontweight="bold")
         ax.text(cx, cy - 0.012, sub, ha="center", va="center",
                fontsize=10.0, linespacing=1.5)  
 
-    # header + minimal footer
     ax.text(0.5, 0.945, "Finality Pyramid (Data-driven)",
         ha="center", va="center", fontsize=17, fontweight="bold")
 
@@ -141,7 +133,6 @@ def build_pyramid(df: pd.DataFrame, assumptions: dict):
     print(f"[ok] Wrote {out_png}")
     print(f"[ok] Wrote {out_svg}")
 
-# ---------- main ----------
 def main():
     df = load_summary()
     assumptions = load_assumptions()

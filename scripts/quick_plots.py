@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from pathlib import Path
 import sys
 import numpy as np
@@ -33,15 +32,12 @@ def _load() -> pd.DataFrame:
     if missing:
         _fail(f"Parquet missing columns: {sorted(missing)}")
 
-    # hygiene
     df["chain"] = df["chain"].astype(str).str.lower().str.strip()
     df["tx_type"] = df["tx_type"].fillna("unknown").astype(str)
 
-    # numeric
     df["calldata_bytes"] = pd.to_numeric(df["calldata_bytes"], errors="coerce")
     df["fee_native_eth"]  = pd.to_numeric(df["fee_native_eth"],  errors="coerce")
 
-    # keep only our chains, in preferred order
     df = df[df["chain"].isin(CHAIN_ORDER)].copy()
     df["chain"] = pd.Categorical(df["chain"], categories=CHAIN_ORDER, ordered=True)
     return df
@@ -69,14 +65,13 @@ def plot_txs_per_chain(df: pd.DataFrame):
     print(f"[ok] wrote {out}")
 
 def plot_tx_types_by_chain(df: pd.DataFrame):
-    # absolute stacked bars
     pivot_abs = (
         df.pivot_table(index="chain",
                        columns="tx_type",
                        values="tx_hash",
                        aggfunc="count",
                        fill_value=0,
-                       observed=False)  # silence pandas future warning
+                       observed=False)  
           .reindex(CHAIN_ORDER, fill_value=0)
     )
     pivot_abs.plot(kind="bar", stacked=True)
@@ -89,7 +84,6 @@ def plot_tx_types_by_chain(df: pd.DataFrame):
     plt.clf()
     print(f"[ok] wrote {out1}")
 
-    # percent view
     row_sums = pivot_abs.sum(axis=1).replace(0, np.nan)
     pivot_pct = (pivot_abs.T / row_sums).T * 100.0
     pivot_pct = pivot_pct.fillna(0.0)
@@ -111,19 +105,16 @@ def _safe_linregress(x: np.ndarray, y: np.ndarray):
       * fit on standardized x with lstsq, fallback to polyfit
       * returns (slope, intercept, r2) or (nan, nan, nan)
     """
-    # finite-only
     msk = np.isfinite(x) & np.isfinite(y)
     x = x[msk]; y = y[msk]
     if x.size < 10:
         return np.nan, np.nan, np.nan
 
-    # ensure variation exists
     x_std = float(np.std(x))
     y_std = float(np.std(y))
     if x_std == 0.0 or y_std == 0.0:
         return np.nan, np.nan, np.nan
 
-    # standardize x for numerical stability
     x_mean = float(np.mean(x))
     x_s = (x - x_mean) / x_std
 
@@ -131,15 +122,13 @@ def _safe_linregress(x: np.ndarray, y: np.ndarray):
     try:
         sol, *_ = np.linalg.lstsq(A, y, rcond=None)
         m_norm, b = float(sol[0]), float(sol[1])
-        m = m_norm / x_std  # undo standardization
+        m = m_norm / x_std  
     except Exception:
-        # fallback
         try:
             m, b = np.polyfit(x, y, 1)
         except Exception:
             return np.nan, np.nan, np.nan
 
-    # R^2
     yhat = m * x + b
     ss_res = float(np.sum((y - yhat) ** 2))
     ss_tot = float(np.sum((y - np.mean(y)) ** 2))
@@ -148,25 +137,20 @@ def _safe_linregress(x: np.ndarray, y: np.ndarray):
 
 def plot_fee_vs_payload_and_leaderboard(df: pd.DataFrame):
     sub = df.dropna(subset=["calldata_bytes", "fee_native_eth"]).copy()
-    # keep only sensible values
     sub = sub[(sub["calldata_bytes"] >= 0) & (sub["fee_native_eth"] > 0)].copy()
 
-    # downsample for scatter if huge
     if len(sub) > 20_000:
         sub = sub.sample(20_000, random_state=1)
 
     plt.figure(figsize=(8.5, 6.0))
     rows = []
 
-    # groupby with explicit observed flag to silence warning
     for ch, g in sub.groupby("chain", observed=False):
         x = g["calldata_bytes"].to_numpy(dtype=float)
         y = g["fee_native_eth"].to_numpy(dtype=float)
 
-        # draw points
         plt.scatter(x, y, s=10, alpha=0.45, label=str(ch))
 
-        # fit in central range to avoid leverage
         if x.size >= 10:
             qlo, qhi = np.nanpercentile(x, [2.5, 97.5])
             fit_mask = (x >= qlo) & (x <= qhi)
@@ -175,7 +159,7 @@ def plot_fee_vs_payload_and_leaderboard(df: pd.DataFrame):
             m, b, r2 = _safe_linregress(xf, yf)
             if np.isfinite(m):
                 xs = np.linspace(xf.min(), xf.max(), 60)
-                plt.plot(xs, m*xs + b)  # default color per label
+                plt.plot(xs, m*xs + b)  
 
                 rows.append({
                     "chain": str(ch),
@@ -197,7 +181,6 @@ def plot_fee_vs_payload_and_leaderboard(df: pd.DataFrame):
     plt.clf()
     print(f"[ok] wrote {out}")
 
-    # log-log variant (if all positive)
     if (sub["calldata_bytes"] > 0).any() and (sub["fee_native_eth"] > 0).any():
         plt.figure(figsize=(8.5, 6.0))
         for ch, g in sub.groupby("chain", observed=False):
@@ -213,7 +196,6 @@ def plot_fee_vs_payload_and_leaderboard(df: pd.DataFrame):
         plt.clf()
         print(f"[ok] wrote {out_log}")
 
-    # save KPI table
     if rows:
         tb = pd.DataFrame(rows).sort_values("slope_eth_per_kib", ascending=True)
         outcsv = DATA / "cost_per_kib.csv"
@@ -232,7 +214,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-#python quick_plots.py  python scripts/quick_plots.py
-#start ..\figures
 

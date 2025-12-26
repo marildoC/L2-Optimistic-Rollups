@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import pandas as pd
 from pathlib import Path
 
@@ -7,23 +6,19 @@ OUT = ROOT / "data" / "clean" / "overview_tables.html"
 
 df = pd.read_parquet(ROOT / "data" / "clean" / "txs_all.parquet")
 
-# Per-chain counts
 per_chain = df.groupby("chain", dropna=False).size().rename("tx_count").reset_index()
 
-# Tx-type breakdown per chain
 tx_by_chain = (
     df.pivot_table(index="chain", columns="tx_type", values="tx_hash", aggfunc="count", fill_value=0)
       .reset_index()
 )
 
-# Fee / payload summary per chain
 fee_cols = ["fee_native_eth", "calldata_bytes", "gas_used", "effective_gas_price_wei"]
 fee_summary = (
     df.groupby("chain")[fee_cols]
       .agg(["count", "median", "mean", "max"])
 )
 
-# Pretty styling
 def style_table(t, caption):
     sty = (t.style
               .set_caption(caption)
@@ -67,4 +62,3 @@ print(f"[ok] Wrote {OUT}")
 
 
 
-#

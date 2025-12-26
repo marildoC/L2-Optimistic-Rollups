@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# Builds:
-# - report/trust_matrix.html (Jinja2 if available; else simple HTML)
-# - figures/trust_matrix.png  (Matplotlib fallback, zero extra deps)
+
 
 from pathlib import Path
 import sys
@@ -42,7 +39,6 @@ def css_class(status: str) -> str:
     return "planned"
 
 def render_html(rows, verified_on: str):
-    # Prefer Jinja2 template; fall back to simple HTML if not available
     try:
         from jinja2 import Environment, FileSystemLoader, select_autoescape
         env = Environment(loader=FileSystemLoader(str(TPL_DIR)),
@@ -71,7 +67,6 @@ def render_html(rows, verified_on: str):
     print(f"[ok] wrote {OUT_HTML}")
 
 def render_png(rows):
-    # Matplotlib fallback: simple, clean table (no sources)
     import matplotlib.pyplot as plt
     from matplotlib.table import Table
 
@@ -116,7 +111,6 @@ def main():
     df = pd.read_csv(CSV)
     df = normalize(df)
 
-    # compute "verified_on" as the max date present in any column
     try:
         dates = []
         for c in CHAINS:

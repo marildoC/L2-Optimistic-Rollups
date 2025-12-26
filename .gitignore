@@ -1,7 +1,18 @@
+# secrets / local env
+.env
+
+# python caches
 __pycache__/
 *.pyc
+
+# venv
 .venv/
+
+# data outputs
 data/raw/
+data/clean/
 *.csv
 *.parquet
+
+# editor
 .vscode/

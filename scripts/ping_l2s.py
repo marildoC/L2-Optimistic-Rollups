@@ -1,12 +1,10 @@
-# scripts/ping_l2s.py
 from __future__ import annotations
 from web3 import Web3
 from datetime import datetime, timezone
 import time, os
 from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv(), override=True)  # <— force override
+load_dotenv(find_dotenv(), override=True)  
 
-# Load .env so OP_RPC/BASE_RPC/ARB_RPC are available
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -18,7 +16,6 @@ def iso_utc(ts: int) -> str:
 
 CHAIN_IDS = {"optimism": 10, "base": 8453, "arbitrum": 42161}
 
-# Read ENV first (strip whitespace). If empty, we’ll fall back.
 
 
 ENV_URLS = {
@@ -42,19 +39,16 @@ def try_provider(url: str, max_tries: int = 3):
     """
     w3 = Web3(Web3.HTTPProvider(url, request_kwargs={"timeout": 8}))
 
-    # measure RTT using is_connected()
     start = time.perf_counter()
     ok = w3.is_connected()
     rtt_ms = (time.perf_counter() - start) * 1000.0
     if not ok:
-        # force a JSON-RPC call so we see the HTTP error (401/429/etc.)
         try:
             w3.eth.chain_id
         except Exception as e:
             raise RuntimeError(f"is_connected=False; RPC call failed: {e}")
         raise RuntimeError("is_connected=False (no further info)")
 
-    # fetch details with a couple retries
     last_err = None
     for _ in range(max_tries):
         try:
@@ -95,7 +89,6 @@ def main():
         for i, u in enumerate(urls, 1):
             print(f"  Candidate {i}: {u}")
         try:
-            # Try the first (and only, if ENV) URL
             url = urls[0]
             data = try_provider(url)
             if data["chain_id"] != CHAIN_IDS[chain]:
