@@ -1,20 +1,20 @@
 # Empirical Analysis of Ethereum Layer-2 Optimistic Rollups
 
-This repository presents a data-driven empirical analysis of Ethereum Layer-2 Optimistic Rollups, with a focused comparison of Optimism, Base, and Arbitrum. The study evaluates how architectural design choices of optimistic rollups manifest in practice by measuring transaction latency, finality anchoring behavior, fee characteristics, and transaction composition using live on-chain data.
+This repository presents a rigorous empirical analysis of Ethereum Layer-2 Optimistic Rollups, with a comparative focus on Optimism, Base, and Arbitrum. The study investigates how optimistic rollup design choices translate into observable system behavior by measuring transaction latency, finality anchoring, fee characteristics, transaction composition using live on-chain data and so on.
 
-The repository contains the complete analytical implementation required to reproduce the results discussed in the accompanying PDF report, which provides the theoretical background, research questions, methodological justification, and interpretation of findings.
+The repository contains the full analytical implementation supporting the accompanying PDF research report, which details the theoretical background, research questions, methodology, and interpretation of results. All metrics and figures discussed in the report are derived directly from the analyses implemented here.
 
-Rather than offering a purely descriptive comparison, the project adopts an empirical approach based on observable performance and cost metrics derived from real transaction data. A uniform measurement methodology is applied across rollup systems to enable fair and reproducible cross-chain comparison.
+The project adopts a measurement-driven approach rather than a purely architectural comparison. A uniform data collection and normalization methodology is applied across rollup systems to enable fair, reproducible cross-chain evaluation. The analysis emphasizes user-visible performance, L2-to-L1 settlement behavior, and economic properties related to calldata usage and transaction batching.
 
-The analysis emphasizes user-visible performance, L2-to-L1 settlement behavior, and economic characteristics related to calldata usage and transaction batching. Generated datasets and figures correspond directly to those referenced in the report.
+This codebase is intended to be used as a reproducible analytical framework. By executing the provided data collection, processing, and analysis scripts in sequence, users can regenerate the datasets and figures presented in the report or extend the methodology to additional rollup systems or alternative observation windows.
 
-Large raw datasets, virtual environments, and private credentials are intentionally excluded to maintain clarity, security, and reproducibility.
+Large raw datasets, environment-specific artifacts, and private credentials are excluded to preserve clarity, security, and reproducibility.
 
-This project was developed within the academic context of Blockchain and Distributed Ledger Technologies at Sapienza University of Rome, with a focus on empirical system evaluation and performance analysis.
+This work was developed in an academic context within the field of Blockchain and Distributed Ledger Technologies at Sapienza University of Rome.
 
-**Supervision:**  
+**Supervision**  
 Massimo La Morgia — Sapienza University of Rome
 
-**Author:**  
+**Author**  
 Marildo Cani — MSc Computer Science  
 Blockchain & Distributed Systems
