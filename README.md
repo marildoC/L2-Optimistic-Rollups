@@ -58,7 +58,7 @@ python rollup_project/scripts/latency_suite.py
 python rollup_project/scripts/quick_plots.py
 [!IMPORTANT] Running the pipeline regenerates the figures and metrics discussed in the report. Since the data is collected from live blockchain endpoints, numerical results may vary slightly depending on the exact time of execution.
 
-📄 Relation to the PDF Report
+## 📄 Relation to the PDF Report
 This repository represents the implementation layer that produces the empirical evidence referenced throughout the accompanying PDF report. The report provides:
 
 Conceptual background on Optimistic Rollups.
@@ -67,11 +67,11 @@ Formal research questions and methodology.
 
 Detailed comparative interpretation of the empirical results.
 
-🎓 Academic Context
+## 🎓 Academic Context
 This project was developed within the Blockchain and Distributed Ledger Technologies course at Sapienza University of Rome, with an emphasis on empirical system evaluation and performance analysis.
 
-Supervision
+## Supervision
 Massimo La Morgia - Sapienza University of Rome
 
-Author
+## Author
 Marildo Cani - MSc Computer Science (Blockchain & Distributed Systems)
