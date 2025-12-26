@@ -1,18 +1,13 @@
 # secrets / local env
 .env
+*.env
 
-# python caches
+# python venv
+.venv/
+venv/
+
+# caches
+.cache/
 __pycache__/
 *.pyc
-
-# venv
-.venv/
-
-# data outputs
-data/raw/
-data/clean/
-*.csv
-*.parquet
-
-# editor
-.vscode/
+.ipynb_checkpoints/
