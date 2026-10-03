@@ -1,4 +1,4 @@
-# Empirical Analysis of Ethereum L2 Optimistic Rollups
+# Empirical Analysis of Ethereum L2 Optimistic Rollups 
 
 A measurement-driven study of **Ethereum Layer-2 blockchain systems**, focused on **Optimism, Base, and Arbitrum**. The repository analyzes how optimistic rollup architectures translate into observable system behavior across transaction latency, L2-to-L1 finality, fee dynamics, transaction composition, and settlement characteristics.
 
